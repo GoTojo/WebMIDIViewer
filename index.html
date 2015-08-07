@@ -1,0 +1,97 @@
+<!DOCTYPE html> 
+<html lang="jp"> 	
+<head> 		
+<meta charset="utf-8"> 		
+<title>WebMIDIViewer</title> 		
+<link href="css/bootstrap.min.css" rel="stylesheet"> 		
+<script src="js/flatKeyboard.js"></script>
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src='js/smfplayer.js'></script>
+<script src='js/mididevice.js'></script>
+<script type="text/javascript">
+	function onMIDIMessage(event) {
+		var message=Math.floor(event.receivedTime) + ": ";
+		for (var i=0; i<event.data.length; i++) message+=event.data[i].toString(16)+" ";
+		console.log(message);
+		var midiinArea = document.getElementById('midiin');
+		midiinArea.innerHTML+=message+"<BR>";
+		midiinArea.scrollTop = midiinArea.scrollHeight;
+	}
+</script>
+</head>
+<body>
+<div class="container" style="padding:20px 0">
+	<div class="container">
+		<div class="page-header" >
+			<div class="jumbotron">
+				<h2>WebMIDIViewer</h2>
+			</div>
+		</div>
+	</div>
+	<label class="control-label">MIDI In</label>
+	<select id="midiInputSelect" class="form-control" onchange="selectMidiInput()">
+		<option value="1">select input port</option>
+	</select>
+	<label class="control-label">MIDI Out</label>
+	<select id="midiOutputSelect" class="form-control" onchange="selectMidiOutput()">
+		<option value="1">select output port</option>
+	</select>
+
+	<div class="container">
+		<label class="control-label">MIDI In</label>
+		<div class="panel panel-default">
+  			<div class="panel-body" id="midiin" style="overflow: scroll; height: 320px;">
+  			</div>
+  		</div>
+  	</div>
+	<div class="container">
+		<div class="span4 well">
+			<h4>SMFPlayer</h4>
+			<form>
+				<input type="file" id="filedialog" name="file" onchange="onSelectedFile()" accept="audio/mid"/>
+			</form>
+			<button type="button" class='btn btn-default' id="stop" onclick="stop()">
+				<span class="glyphicon glyphicon-stop"></span>
+			</button>
+			<!-- button type="button" id="pause" onclick="pause()">pause</button -->
+			<button type="button" class='btn btn-default' id="play" onclick="play()">
+				<span class="glyphicon glyphicon-play"></span>				
+			</button>
+			<button type="button" class='btn btn-default' id="allnoteoff" onclick="allnoteoff()">panic</button>
+		</div>
+		<div class="progress">
+ 			<div class="progress-bar" id="progress"></div>
+		</div>		
+	</div>
+
+	<div class="container" style="width: 640px; margin:20px 0px 0px 55px;">
+		<div class="keyCanvasArea">
+			<canvas id="keyboard" height="0px"></canvas>
+		</div>
+	</div>
+
+</div>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+	var fKey = new FlatKeyboard("keyboard");
+	var timerId = setInterval(function() {
+		fKey.draw();
+	}, 80);
+	fKey.setConnected();
+	fKey.noteOn = function(noteNo) {
+		output.send([0x90, noteNo, 0x7f]);
+	};
+	fKey.noteOff = function(noteNo) {
+		var now = window.performance.now();
+		output.send([0x80, noteNo, 0x00], now + 200);
+	};
+</script>
+<script  type="text/javascript">
+	midiAccess = navigator.requestMIDIAccess({
+		sysex : true
+	}).then(onMIDISuccess, onMIDIFailure);
+</script>
+</body>
+</html>
