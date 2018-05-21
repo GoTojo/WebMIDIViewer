@@ -11,7 +11,13 @@
 <script src='js/mididevice.js'></script>
 <script type="text/javascript">
 	function onMIDIMessage(event) {
-		var message=Math.floor(event.receivedTime) + ": ";
+		if ($('#realmsgflt').is(':checked')) {
+			var realtime_msg_sts=[248,250,251,253,254,255];
+			if (realtime_msg_sts.indexOf(event.data[0])>=0) {
+				return;
+			}
+		}
+		var message=Math.floor(event.timeStamp) + ": ";
 		for (var i=0; i<event.data.length; i++) message+=event.data[i].toString(16)+" ";
 		console.log(message);
 		var midiinArea = document.getElementById('midiin');
@@ -40,6 +46,7 @@
 
 	<div class="container">
 		<label class="control-label">MIDI In</label>
+		<input type='checkbox' id='realmsgflt' checked='checked'>Realtime Message
 		<div class="panel panel-default">
   			<div class="panel-body" id="midiin" style="overflow: scroll; height: 320px;">
   			</div>
