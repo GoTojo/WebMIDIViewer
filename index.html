@@ -19,7 +19,7 @@
 			}
 		}
 		var message=Math.floor(event.timeStamp) + ": ";
-		for (var i=0; i<event.data.length; i++) message+=event.data[i].toString(16)+" ";
+		for (var i=0; i<event.data.length; i++) message+=('000'+event.data[i].toString(16)).slice(-2).toUpperCase()+" ";
 		console.log(message);
 		var midiinArea = document.getElementById('midiin');
 		midiinArea.innerHTML+=message+"<BR>";
