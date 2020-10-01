@@ -3,10 +3,11 @@
 <head> 		
 <meta charset="utf-8"> 		
 <title>WebMIDIViewer</title> 		
-<link href="css/bootstrap.min.css" rel="stylesheet"> 		
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 <script src="js/flatKeyboard.js"></script>
-<script src="js/jquery-1.11.0.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 <script src='js/smfplayer.js'></script>
 <script src='js/mididevice.js'></script>
 <script type="text/javascript">
@@ -23,6 +24,11 @@
 		var midiinArea = document.getElementById('midiin');
 		midiinArea.innerHTML+=message+"<BR>";
 		midiinArea.scrollTop = midiinArea.scrollHeight;
+	}
+	function send() {
+		var message = $('#midiout').val().split(' ').map(str => parseInt(str, 16));
+		// console.log(message);
+		output.send(message);
 	}
 </script>
 </head>
@@ -48,10 +54,19 @@
 		<label class="control-label">MIDI In</label>
 		<input type='checkbox' id='realmsgflt' checked='checked'>Realtime Message
 		<div class="panel panel-default">
-  			<div class="panel-body" id="midiin" style="overflow: scroll; height: 320px;">
-  			</div>
-  		</div>
-  	</div>
+			<div class="panel-body" id="midiin" style="overflow: scroll; height: 320px;">
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<label class="control-label">MIDI Out</label>
+		<div class="input-group mb-3">
+			<textarea class="form-control" id="midiout"></textarea>
+			<div class="input-group-append">
+				<button class="btn btn-outline-secondary" type="button" id="send" onclick="send()">send</button>
+			</div>
+		</div>
+	</div>
 	<div class="container">
 		<div class="span4 well">
 			<h4>SMFPlayer</h4>
@@ -68,7 +83,7 @@
 			<button type="button" class='btn btn-default' id="allnoteoff" onclick="allnoteoff()">panic</button>
 		</div>
 		<div class="progress">
- 			<div class="progress-bar" id="progress"></div>
+			<div class="progress-bar" id="progress"></div>
 		</div>		
 	</div>
 
@@ -79,7 +94,6 @@
 	</div>
 
 </div>
-<script type="text/javascript" src="js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
 	var fKey = new FlatKeyboard("keyboard");
