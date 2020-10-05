@@ -1,6 +1,5 @@
 	var filereader = new FileReader();
 	var file = null;
-	var progressbar = document.getElementById("progress");
 
 	function Playerinfo() {
 		this.init = function() {
@@ -77,8 +76,6 @@
 		smfinfo.isValid = true;
 		//console.log("validSMF");
 		//console.log("tracksize:"+smfinfo.tracksize);
-		progressbar = document.getElementById("progress");
-		progressbar.max = smfinfo.tracksize;
 		reset();
 		//test();
 	};
@@ -321,7 +318,7 @@ function getNext() {
 	function reset() {
 		songinfo.ptr = songinfo.offsetTop;
 		playerinfo.init();
-		progressbar.value = 0;
+		$('#progress').css('width', '0%').prop('aria-valuenow', 0);
 	}
 	function stop() {
 		clearInterval(playerinfo.timer);
@@ -357,7 +354,8 @@ function getNext() {
 			if (!playerinfo.playing) return;
 			if (songinfo.nexteventtime>=targettime) break;
 			var message = getNext();
-			progressbar.value = songinfo.ptr;
+			var per = Math.floor(songinfo.ptr*100/smfinfo.tracksize);
+			$('#progress').css('width', per+'%').prop('aria-valuenow', per);
 			if (!message.result) {
 				playerinfo.playing = false;
 				pause();
